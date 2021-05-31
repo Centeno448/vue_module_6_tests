@@ -57,7 +57,7 @@ test('App.vue muestra la nota actual cuándo es seleccionada | Asegúrate de que
     const button = buttons[i];
     await button.trigger('click');
     expect(wrapper.find('textarea').element.value.toLowerCase()).toBe(notas[i].contenido.toLowerCase());
-    expect(wrapper.find('h2').text().toLowerCase()).toBe(notas[i].titulo.toLowerCase());
+    expect(wrapper.find('input[type="text"]').element.value.toLowerCase()).toBe(notas[i].titulo.toLowerCase());
   }
 });
 
@@ -74,8 +74,8 @@ test('App.vue no muestra información de la notaActual hasta que algún boton ha
     }
   });
 
-  expect(wrapper.find('h2').exists()).toBe(false);
-  expect(wrapper.find('p').exists()).toBe(false);
+  expect(wrapper.find('input[type="text"]').exists()).toBe(false);
+  expect(wrapper.find('textarea').exists()).toBe(false);
 });
 
 test('App.vue asigna la clase "active" a la nota seleccionada | Asegúrate de que cuando la nota sea la notaActiva, su botón tenga asignado la clase "active" y el resto de los botones no', async () => {
@@ -109,7 +109,7 @@ test('App.vue asigna la clase "active" a la nota seleccionada | Asegúrate de qu
   }
 });
 
-test('App utiliza two-way binding en el contenido de la notaActual | Asegúrate de que utilices la directiva v-model para habilitar el two-way data binding de la propiedad contenido de notaActual', async () => {
+test('App utiliza two-way binding en los valores de notaActual | Asegúrate de que utilices la directiva v-model para habilitar el two-way data binding en el input y textarea de las propiedades de notaActual', async () => {
   const notas = [{ titulo: "testing 12", contenido: "Contenido 1" }, { titulo: "testing 2", contenido: "Contenido 4" }];
 
   const wrapper = shallowMount(App, {
@@ -121,17 +121,20 @@ test('App utiliza two-way binding en el contenido de la notaActual | Asegúrate 
     }
   });
 
+  expect(wrapper.find('input[type="text"]').element.value.toLowerCase()).toBe(wrapper.vm.notaActual.titulo.toLowerCase());
   expect(wrapper.find('textarea').element.value.toLowerCase()).toBe(wrapper.vm.notaActual.contenido.toLowerCase());
 
   notas[0].contenido = "cambiado";
+  notas[0].titulo = "titulo cambiado";
 
   await wrapper.setData({notaActual: notas[0]});
 
   expect(wrapper.find('textarea').element.value.toLowerCase()).toBe(wrapper.vm.notaActual.contenido.toLowerCase());
+  expect(wrapper.find('input[type="text"]').element.value.toLowerCase()).toBe(wrapper.vm.notaActual.titulo.toLowerCase());
 
   await wrapper.find('textarea').setValue('nuevo cambio');
-
-  console.log(wrapper.find('textarea').element.value);
+  await wrapper.find('input[type="text"]').setValue('nuevo titulo cambio');
 
   expect(wrapper.vm.notaActual.contenido.toLowerCase()).toBe('nuevo cambio');
+  expect(wrapper.vm.notaActual.titulo.toLowerCase()).toBe('nuevo titulo cambio');
 });
