@@ -1,5 +1,25 @@
-import { shallowMount } from "@vue/test-utils";
+import { shallowMount, mount } from "@vue/test-utils";
 import App from "@/App.vue";
+
+test('App.vue recibe el parametro "notas" en la función data() | Asegúrate de que App.vue defina una variable notas dentro de su funcion data', async () => {
+  const notas = [{ titulo: "testing 12" }, { titulo: "testing 13" }];
+
+  const dataChecker = mount(App);
+
+  await dataChecker.setData({notas: notas});
+
+  dataChecker.unmount();
+});
+
+test('App.vue recibe el parametro "notaActual" en la función data() | Asegúrate de que App.vue defina una variable notaActual dentro de su funcion data', async () => {
+  const nota = { titulo: "testing 12" };
+
+  const dataChecker = mount(App);
+
+  await dataChecker.setData({notaActual: nota});
+
+  dataChecker.unmount();
+});
 
 test('App.vue muestra el titulo de las notas dentro de una lista | Asegúrate de que App.vue defina en su función data la propiedad "notas", y que por cada elemento se despliegue un boton con el titulo de la nota', () => {
   const notas = [{ titulo: "testing 12", contenido: "Contenido 1" }, { titulo: "testing 3", contenido: "Contenido 1" }];
@@ -20,6 +40,8 @@ test('App.vue muestra el titulo de las notas dentro de una lista | Asegúrate de
     const button = item.find('button');
     expect(button.text()).toBe(notas[i].titulo);
   }
+
+  expect(listItems.length).toBe(2);
 });
 
 test('App.vue muestra "No hay notas guardadas" cuando el arreglo de notas está vacío | Asegúrate de que App.vue muestre un <p> con "No hay notas guardadas" cuando el arreglo de notas se encuentre vacío', () => {
